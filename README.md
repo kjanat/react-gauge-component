@@ -32,57 +32,39 @@ import { Gauge } from '@kjanat/react-gauge-component';
 import '@kjanat/react-gauge-component/dist/styles.css';
 
 function App() {
-  return (
-    <Gauge
-      value={75}
-      min={0}
-      max={100}
-      label="Performance"
-    />
-  );
+  return <Gauge value={75} min={0} max={100} label="Performance" />;
 }
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `number` | `2.5` | Current value to display |
-| `min` | `number` | `0` | Minimum value of the gauge |
-| `max` | `number` | `5` | Maximum value of the gauge |
-| `label` | `string` | `''` | Label text displayed below the gauge |
-| `displayType` | `'percentage' \| 'value' \| 'custom'` | `'percentage'` | How to display the current value |
-| `customDisplay` | `(value: number) => string` | `null` | Custom function to format the display value |
-| `tickInterval` | `number` | `1` | Interval between tick marks |
-| `showTicks` | `boolean` | `true` | Whether to show tick marks and labels |
-| `colors` | `string[]` | `['#22c55e', '#10b981', '#84cc16', '#eab308', '#f59e0b', '#ef4444']` | Array of colors for gauge segments |
-| `size` | `number` | `300` | Width of the gauge in pixels |
-| `thickness` | `number` | `40` | Thickness of the gauge arc |
-| `className` | `string` | `''` | Additional CSS class for styling |
+| Prop            | Type                                  | Default                                                              | Description                                 |
+| --------------- | ------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------- |
+| `value`         | `number`                              | `2.5`                                                                | Current value to display                    |
+| `min`           | `number`                              | `0`                                                                  | Minimum value of the gauge                  |
+| `max`           | `number`                              | `5`                                                                  | Maximum value of the gauge                  |
+| `label`         | `string`                              | `''`                                                                 | Label text displayed below the gauge        |
+| `displayType`   | `'percentage' \| 'value' \| 'custom'` | `'percentage'`                                                       | How to display the current value            |
+| `customDisplay` | `(value: number) => string`           | `null`                                                               | Custom function to format the display value |
+| `tickInterval`  | `number`                              | `1`                                                                  | Interval between tick marks                 |
+| `showTicks`     | `boolean`                             | `true`                                                               | Whether to show tick marks and labels       |
+| `colors`        | `string[]`                            | `['#22c55e', '#10b981', '#84cc16', '#eab308', '#f59e0b', '#ef4444']` | Array of colors for gauge segments          |
+| `size`          | `number`                              | `300`                                                                | Width of the gauge in pixels                |
+| `thickness`     | `number`                              | `40`                                                                 | Thickness of the gauge arc                  |
+| `className`     | `string`                              | `''`                                                                 | Additional CSS class for styling            |
 
 ## Examples
 
 ### Basic Usage
 
 ```jsx
-<Gauge
-  value={3.5}
-  min={0}
-  max={5}
-  label="Score"
-/>
+<Gauge value={3.5} min={0} max={5} label="Score" />
 ```
 
 ### Percentage Display
 
 ```jsx
-<Gauge
-  value={75}
-  min={0}
-  max={100}
-  label="Progress"
-  displayType="percentage"
-/>
+<Gauge value={75} min={0} max={100} label="Progress" displayType="percentage" />
 ```
 
 ### Custom Display Format
@@ -177,6 +159,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Changelog
 
 ### 1.0.0
+
 - Initial release
 - Basic gauge functionality
 - TypeScript support
