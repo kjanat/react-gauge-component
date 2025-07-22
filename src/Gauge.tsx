@@ -1,5 +1,4 @@
 import React from 'react';
-import './Gauge.css';
 
 export interface GaugeProps {
   value?: number;
@@ -31,7 +30,6 @@ const Gauge: React.FC<GaugeProps> = ({
   className = ''
 }) => {
   const uniqueId = React.useId();
-  const maskId = `textMask-${uniqueId}`;
   const filterId = `invert-${uniqueId}`;
   
   const clampedValue = Math.max(min, Math.min(max, value));
@@ -39,9 +37,9 @@ const Gauge: React.FC<GaugeProps> = ({
   const needleAngle = (percentage / 100) * 180;
   
   const width = size;
-  const height = size / 2 + 40;
+  const height = size / 2 + 60; // Increased to accommodate label
   const centerX = width / 2;
-  const centerY = height - 20;
+  const centerY = height - 40; // Adjusted to leave room for label
   const radius = (width / 2) - 30;
   const innerRadius = radius - thickness;
   
@@ -114,8 +112,8 @@ const Gauge: React.FC<GaugeProps> = ({
   };
   
   return (
-    <div className={`gauge-container ${className}`}>
-      <svg width={width} height={height} className="gauge-svg">
+    <div className={`flex flex-col items-center ${className}`}>
+      <svg width={width} height={height} className="overflow-visible">
         <defs>
           <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
             <feMorphology operator="dilate" radius="3" result="expanded"/>
@@ -167,7 +165,7 @@ const Gauge: React.FC<GaugeProps> = ({
                 y={labelY}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                className="gauge-tick-label"
+                className="text-sm font-medium fill-gray-600"
               >
                 {tick.value}
               </text>
@@ -198,7 +196,7 @@ const Gauge: React.FC<GaugeProps> = ({
           x={centerX}
           y={centerY - 40}
           textAnchor="middle"
-          className="gauge-value"
+          className="text-2xl font-bold fill-gray-800"
           filter={`url(#${filterId})`}
         >
           {getDisplayValue()}
@@ -209,7 +207,7 @@ const Gauge: React.FC<GaugeProps> = ({
             x={centerX}
             y={centerY + 30}
             textAnchor="middle"
-            className="gauge-label"
+            className="text-lg font-medium fill-gray-600"
           >
             {label}
           </text>
