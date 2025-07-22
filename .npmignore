@@ -1,0 +1,30 @@
+# Source files
+src/
+examples/
+docs/
+
+# Config files
+.gitignore
+tsconfig.json
+vite.config.ts
+vite.config.lib.ts
+tailwind.config.js
+postcss.config.js
+.eslintrc
+
+# Development files
+*.log
+.DS_Store
+node_modules/
+coverage/
+.env*
+
+# Editor files
+.vscode/
+.idea/
+
+# Git files
+.git/
+.github/
+
+# Keep only dist/, README.md, LICENSE, and package.json
