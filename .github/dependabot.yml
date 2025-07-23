@@ -7,8 +7,6 @@ updates:
       day: "monday"
       time: "03:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "kjanat"
     labels:
       - "dependencies"
       - "automated"
@@ -32,8 +30,6 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "03:00"
-    reviewers:
-      - "kjanat"
     labels:
       - "github-actions"
       - "automated"
