@@ -86,7 +86,6 @@ function App() {
               step="0.1"
               value={value1}
               onChange={(e) => setValue1(parseFloat(e.target.value))}
-              className="w-full"
             />
             <p className="text-center text-gray-600 dark:text-gray-400 text-sm">Value: {value1}</p>
           </div>

@@ -47,7 +47,8 @@ describe("Gauge Component", () => {
   it("renders with custom size", () => {
     const { container } = render(<Gauge size={400} />);
     const svg = container.querySelector("svg");
-    expect(svg).toHaveAttribute("width", "400");
+    // Width includes padding (size + 20)
+    expect(svg).toHaveAttribute("width", "420");
     // Height is calculated dynamically based on size
     expect(svg).toHaveAttribute("height");
   });

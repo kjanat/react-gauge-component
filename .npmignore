@@ -6,7 +6,8 @@ docs/
 # Config files
 .gitignore
 tsconfig.json
-tsconfig.build.json
+tsconfig.lib.json
+tsconfig.examples.json
 vite.config.examples.ts
 vite.config.lib.ts
 tailwind.config.js
