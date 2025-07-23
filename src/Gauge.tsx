@@ -46,7 +46,6 @@ const Gauge: React.FC<GaugeProps> = ({
   const ticks: Array<{ value: number; angle: number }> = [];
   if (showTicks) {
     let tickValue = Math.ceil(min / tickInterval) * tickInterval;
-    if (tickValue < min) tickValue = min;
 
     while (tickValue <= max) {
       const tickPercentage = ((tickValue - min) / (max - min)) * 100;
@@ -96,7 +95,7 @@ const Gauge: React.FC<GaugeProps> = ({
     const x4 = centerX + innerRadius * Math.cos(startAngleRad);
     const y4 = centerY + innerRadius * Math.sin(startAngleRad);
 
-    const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
+    const largeArcFlag = 0; // Semicircle gauge never exceeds 180 degrees
 
     return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${x4} ${y4} Z`;
   };
