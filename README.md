@@ -52,6 +52,9 @@ function App() {
 | `size`          | `number`                              | `300`                                                                | Width of the gauge in pixels                |
 | `thickness`     | `number`                              | `40`                                                                 | Thickness of the gauge arc                  |
 | `className`     | `string`                              | `''`                                                                 | Additional CSS class for styling            |
+| `lightTheme`    | `ThemeColors`                         | See below                                                            | Custom colors for light mode                |
+| `darkTheme`     | `ThemeColors`                         | See below                                                            | Custom colors for dark mode                 |
+| `autoDetectTheme` | `boolean`                           | `true`                                                               | Automatically detect and apply dark mode    |
 
 ## Examples
 
@@ -101,6 +104,54 @@ function App() {
 
 // Large gauge
 <Gauge value={50} size={400} thickness={60} />
+```
+
+### Dark Mode Support
+
+The component automatically detects dark mode based on:
+
+- Tailwind's `dark` class on `<html>` or `<body>`
+- System preference via `prefers-color-scheme: dark`
+
+```jsx
+// Automatic dark mode detection (default)
+<Gauge value={3.5} min={0} max={5} />
+
+// Custom theme colors
+<Gauge
+  value={3.5}
+  min={0}
+  max={5}
+  lightTheme={{
+    background: '#f3f4f6',
+    tickColor: '#6b7280',
+    needleColor: '#111827',
+    needleCenter: '#e5e7eb',
+    textOutline: '#ffffff'
+  }}
+  darkTheme={{
+    background: '#111827',
+    tickColor: '#d1d5db',
+    needleColor: '#f9fafb',
+    needleCenter: '#4b5563',
+    textOutline: '#000000'
+  }}
+/>
+
+// Disable automatic theme detection
+<Gauge value={3.5} autoDetectTheme={false} />
+```
+
+#### ThemeColors Interface
+
+```typescript
+interface ThemeColors {
+  background?: string;    // Inner arc background
+  tickColor?: string;     // Tick marks color
+  needleColor?: string;   // Needle body color
+  needleCenter?: string;  // Needle center dot color
+  textOutline?: string;   // Text outline effect color
+}
 ```
 
 ## Styling

@@ -8,10 +8,28 @@ function App() {
   const [value2, setValue2] = React.useState(7);
   const [value3, setValue3] = React.useState(75);
   const [value4, setValue4] = React.useState(3.2);
+  const [isDarkMode, setIsDarkMode] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDarkMode]);
 
   return (
     <div className="app">
-      <h1>React Gauge Component Examples</h1>
+      <div className="header">
+        <h1>React Gauge Component Examples</h1>
+        <button 
+          className="theme-toggle"
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          aria-label="Toggle dark mode"
+        >
+          {isDarkMode ? "☀️ Light" : "🌙 Dark"}
+        </button>
+      </div>
 
       <div className="examples-grid">
         <div className="example-card">
@@ -110,6 +128,35 @@ function App() {
               onChange={(e) => setValue4(parseFloat(e.target.value))}
             />
             <p>Value: {value4}</p>
+          </div>
+        </div>
+
+        <div className="example-card">
+          <h2>Custom Theme Example</h2>
+          <Gauge
+            value={4}
+            min={0}
+            max={5}
+            label="Themed Gauge"
+            displayType="value"
+            tickInterval={1}
+            lightTheme={{
+              background: "#f3f4f6",
+              tickColor: "#6b7280",
+              needleColor: "#111827",
+              needleCenter: "#e5e7eb",
+              textOutline: "#ffffff",
+            }}
+            darkTheme={{
+              background: "#111827",
+              tickColor: "#d1d5db",
+              needleColor: "#f9fafb",
+              needleCenter: "#4b5563",
+              textOutline: "#000000",
+            }}
+          />
+          <div className="controls">
+            <p>This gauge uses custom light/dark themes</p>
           </div>
         </div>
       </div>

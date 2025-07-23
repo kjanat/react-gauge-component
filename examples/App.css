@@ -1,3 +1,23 @@
+:root {
+  --bg-primary: #f9fafb;
+  --bg-secondary: white;
+  --text-primary: #1f2937;
+  --text-secondary: #374151;
+  --text-tertiary: #6b7280;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --code-bg: #f3f4f6;
+}
+
+.dark {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #e5e7eb;
+  --text-tertiary: #9ca3af;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --code-bg: #374151;
+}
+
 body {
   margin: 0;
   font-family:
@@ -5,7 +25,8 @@ body {
     "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f9fafb;
+  background-color: var(--bg-primary);
+  transition: background-color 0.3s ease;
 }
 
 .app {
@@ -13,11 +34,37 @@ body {
   min-height: 100vh;
 }
 
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
 h1 {
   text-align: center;
-  color: #1f2937;
-  margin-bottom: 2rem;
+  color: var(--text-primary);
   font-size: 2rem;
+  margin: 0;
+}
+
+.theme-toggle {
+  position: absolute;
+  right: 0;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--code-bg);
 }
 
 .examples-grid {
@@ -29,19 +76,20 @@ h1 {
 }
 
 .example-card {
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 15px -3px var(--border-color);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: all 0.3s ease;
 }
 
 .example-card h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #374151;
+  color: var(--text-secondary);
   font-size: 1.25rem;
 }
 
@@ -57,21 +105,22 @@ h1 {
 
 .controls p {
   text-align: center;
-  color: #6b7280;
+  color: var(--text-tertiary);
   font-size: 0.875rem;
 }
 
 .props-documentation {
   max-width: 1000px;
   margin: 3rem auto 0;
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 15px -3px var(--border-color);
   padding: 2rem;
+  transition: all 0.3s ease;
 }
 
 .props-documentation h2 {
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
 }
@@ -84,7 +133,7 @@ h1 {
 }
 
 .props-documentation h3 {
-  color: #374151;
+  color: var(--text-secondary);
   margin-bottom: 1rem;
   font-size: 1.125rem;
 }
@@ -92,7 +141,7 @@ h1 {
 .props-documentation ul {
   list-style: none;
   padding: 0;
-  color: #6b7280;
+  color: var(--text-tertiary);
 }
 
 .props-documentation li {
@@ -101,11 +150,11 @@ h1 {
 }
 
 .props-documentation code {
-  background: #f3f4f6;
+  background: var(--code-bg);
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
   font-size: 0.875rem;
-  color: #374151;
+  color: var(--text-secondary);
 }
 
 .example-usage {
@@ -113,10 +162,11 @@ h1 {
 }
 
 .example-usage pre {
-  background: #f3f4f6;
+  background: var(--code-bg);
   padding: 1rem;
   border-radius: 0.5rem;
   overflow-x: auto;
   font-size: 0.875rem;
   line-height: 1.5;
+  color: var(--text-primary);
 }

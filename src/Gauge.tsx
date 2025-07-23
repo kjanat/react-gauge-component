@@ -2,6 +2,19 @@ import React from "react";
 
 export type DisplayType = "percentage" | "value" | "custom";
 
+export interface ThemeColors {
+  /** Background color for inner arc (default: white in light, #1f2937 in dark) */
+  background?: string;
+  /** Color for tick marks (default: #374151 in light, #9ca3af in dark) */
+  tickColor?: string;
+  /** Color for needle body (default: #1f2937 in light, #e5e7eb in dark) */
+  needleColor?: string;
+  /** Color for needle center dot (default: white in light, #374151 in dark) */
+  needleCenter?: string;
+  /** Color for text outline effect (default: white in light, black in dark) */
+  textOutline?: string;
+}
+
 export interface GaugeProps {
   /** Current value to display on the gauge (default: 2.5) */
   value?: number;
@@ -27,6 +40,12 @@ export interface GaugeProps {
   thickness?: number;
   /** Additional CSS classes to apply to the wrapper */
   className?: string;
+  /** Theme colors for light mode */
+  lightTheme?: ThemeColors;
+  /** Theme colors for dark mode */
+  darkTheme?: ThemeColors;
+  /** Automatically detect and apply dark mode (default: true) */
+  autoDetectTheme?: boolean;
 }
 
 const Gauge: React.FC<GaugeProps> = ({
@@ -42,9 +61,66 @@ const Gauge: React.FC<GaugeProps> = ({
   size = 300,
   thickness = 40,
   className = "",
+  lightTheme = {},
+  darkTheme = {},
+  autoDetectTheme = true,
 }) => {
   const uniqueId = React.useId();
   const filterId = `invert-${uniqueId}`;
+
+  // Default theme configurations
+  const defaultLightTheme: ThemeColors = {
+    background: "white",
+    tickColor: "#374151",
+    needleColor: "#1f2937",
+    needleCenter: "white",
+    textOutline: "white",
+  };
+
+  const defaultDarkTheme: ThemeColors = {
+    background: "#1f2937",
+    tickColor: "#9ca3af",
+    needleColor: "#e5e7eb",
+    needleCenter: "#374151",
+    textOutline: "black",
+  };
+
+  // Detect dark mode
+  const [isDarkMode, setIsDarkMode] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!autoDetectTheme) return;
+
+    const checkDarkMode = () => {
+      // Check for Tailwind dark mode class on html/body
+      const hasDarkClass = document.documentElement.classList.contains("dark") || 
+                          document.body.classList.contains("dark");
+      // Check system preference
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setIsDarkMode(hasDarkClass || prefersDark);
+    };
+
+    checkDarkMode();
+
+    // Listen for class changes
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+
+    // Listen for system preference changes
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    mediaQuery.addEventListener("change", checkDarkMode);
+
+    return () => {
+      observer.disconnect();
+      mediaQuery.removeEventListener("change", checkDarkMode);
+    };
+  }, [autoDetectTheme]);
+
+  // Merge themes with defaults
+  const currentLightTheme = { ...defaultLightTheme, ...lightTheme };
+  const currentDarkTheme = { ...defaultDarkTheme, ...darkTheme };
+  const activeTheme = isDarkMode ? currentDarkTheme : currentLightTheme;
 
   const clampedValue = Math.max(min, Math.min(max, value));
   const percentage = ((clampedValue - min) / (max - min)) * 100;
@@ -143,10 +219,10 @@ const Gauge: React.FC<GaugeProps> = ({
         <defs>
           <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
             <feMorphology operator="dilate" radius="3" result="expanded" />
-            <feFlood floodColor="white" result="white" />
-            <feComposite in="white" in2="expanded" operator="in" result="whiteBorder" />
+            <feFlood floodColor={activeTheme.textOutline} result="outline" />
+            <feComposite in="outline" in2="expanded" operator="in" result="outlineBorder" />
             <feMerge>
-              <feMergeNode in="whiteBorder" />
+              <feMergeNode in="outlineBorder" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
@@ -163,7 +239,7 @@ const Gauge: React.FC<GaugeProps> = ({
 
         <path
           d={`M ${centerX - innerRadius} ${centerY} A ${innerRadius} ${innerRadius} 0 0 1 ${centerX + innerRadius} ${centerY}`}
-          fill="white"
+          fill={activeTheme.background}
           stroke="none"
         />
 
@@ -178,7 +254,7 @@ const Gauge: React.FC<GaugeProps> = ({
 
           return (
             <g key={tick.value}>
-              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#374151" strokeWidth="2" />
+              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={activeTheme.tickColor} strokeWidth="2" />
               <text
                 x={labelX}
                 y={labelY}
@@ -195,10 +271,10 @@ const Gauge: React.FC<GaugeProps> = ({
         <g transform={`rotate(${needleAngle} ${centerX} ${centerY})`}>
           <path
             d={`M ${centerX - radius * 0.7} ${centerY} L ${centerX - radius * 0.15} ${centerY - 6} L ${centerX - radius * 0.15} ${centerY + 6} Z`}
-            fill="#1f2937"
+            fill={activeTheme.needleColor}
           />
-          <circle cx={centerX} cy={centerY} r="12" fill="#1f2937" />
-          <circle cx={centerX} cy={centerY} r="8" fill="white" />
+          <circle cx={centerX} cy={centerY} r="12" fill={activeTheme.needleColor} />
+          <circle cx={centerX} cy={centerY} r="8" fill={activeTheme.needleCenter} />
         </g>
 
         <text

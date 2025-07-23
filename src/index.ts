@@ -1,5 +1,5 @@
-import type { DisplayType, GaugeProps } from "./Gauge";
+import type { DisplayType, GaugeProps, ThemeColors } from "./Gauge";
 import Gauge from "./Gauge";
 
-export { Gauge, type GaugeProps, type DisplayType };
+export { Gauge, type GaugeProps, type DisplayType, type ThemeColors };
 export default Gauge;

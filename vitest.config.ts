@@ -17,6 +17,7 @@ export default defineConfig({
         "**/*{.,-}test.{ts,tsx}",
         "**/dist/**",
         "examples/**",
+        "dist-examples/**",
       ],
     },
   },

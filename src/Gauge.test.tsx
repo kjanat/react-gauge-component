@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import Gauge from "./Gauge";
-import { type DisplayType, type GaugeProps, Gauge as NamedGauge } from "./index";
+import { type DisplayType, type GaugeProps, type ThemeColors, Gauge as NamedGauge } from "./index";
 
 describe("Gauge Component", () => {
   it("renders without crashing", () => {
@@ -184,6 +184,101 @@ describe("Gauge Component", () => {
     expect(colorPaths.length).toBeGreaterThan(0);
     // Should use the fallback gray color
     expect(colorPaths[0].getAttribute("fill")).toBe("#6b7280");
+  });
+
+  it("applies default light theme colors", () => {
+    const { container } = render(<Gauge value={3} showTicks={true} />);
+
+    // Check background color
+    const innerArc = container.querySelector('path[fill="white"]');
+    expect(innerArc).toBeInTheDocument();
+
+    // Check tick color
+    const tickLine = container.querySelector('line[stroke="#374151"]');
+    expect(tickLine).toBeInTheDocument();
+
+    // Check needle color
+    const needlePath = container.querySelector('path[fill="#1f2937"]');
+    expect(needlePath).toBeInTheDocument();
+  });
+
+  it("applies custom light theme colors", () => {
+    const customLightTheme: ThemeColors = {
+      background: "#f0f0f0",
+      tickColor: "#666666",
+      needleColor: "#333333",
+      needleCenter: "#ffffff",
+    };
+
+    const { container } = render(
+      <Gauge value={3} showTicks={true} lightTheme={customLightTheme} />
+    );
+
+    // Check custom background color
+    const innerArc = container.querySelector('path[fill="#f0f0f0"]');
+    expect(innerArc).toBeInTheDocument();
+
+    // Check custom tick color
+    const tickLine = container.querySelector('line[stroke="#666666"]');
+    expect(tickLine).toBeInTheDocument();
+
+    // Check custom needle color
+    const needlePath = container.querySelector('path[fill="#333333"]');
+    expect(needlePath).toBeInTheDocument();
+  });
+
+  it("detects dark mode class on document element", () => {
+    // Add dark class to simulate dark mode
+    document.documentElement.classList.add("dark");
+
+    const { container } = render(<Gauge value={3} showTicks={true} />);
+
+    // Check dark theme colors
+    const innerArc = container.querySelector('path[fill="#1f2937"]');
+    expect(innerArc).toBeInTheDocument();
+
+    // Clean up
+    document.documentElement.classList.remove("dark");
+  });
+
+  it("respects autoDetectTheme=false", () => {
+    // Add dark class
+    document.documentElement.classList.add("dark");
+
+    const { container } = render(<Gauge value={3} showTicks={true} autoDetectTheme={false} />);
+
+    // Should still use light theme colors
+    const innerArc = container.querySelector('path[fill="white"]');
+    expect(innerArc).toBeInTheDocument();
+
+    // Clean up
+    document.documentElement.classList.remove("dark");
+  });
+
+  it("uses custom dark theme when in dark mode", () => {
+    const customDarkTheme: ThemeColors = {
+      background: "#000000",
+      tickColor: "#cccccc",
+      needleColor: "#ffffff",
+      needleCenter: "#888888",
+    };
+
+    // Add dark class
+    document.documentElement.classList.add("dark");
+
+    const { container } = render(
+      <Gauge value={3} showTicks={true} darkTheme={customDarkTheme} />
+    );
+
+    // Check custom dark theme colors
+    const innerArc = container.querySelector('path[fill="#000000"]');
+    expect(innerArc).toBeInTheDocument();
+
+    const tickLine = container.querySelector('line[stroke="#cccccc"]');
+    expect(tickLine).toBeInTheDocument();
+
+    // Clean up
+    document.documentElement.classList.remove("dark");
   });
 });
 

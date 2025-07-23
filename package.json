@@ -1,6 +1,6 @@
 {
   "name": "@kjanat/react-gauge-component",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A customizable gauge/speedometer component for React applications",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
