@@ -13,8 +13,10 @@ function App() {
   React.useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
     } else {
       document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
     }
   }, [isDarkMode]);
 
@@ -146,6 +148,7 @@ function App() {
               needleColor: "#111827",
               needleCenter: "#e5e7eb",
               textOutline: "#ffffff",
+              valueTextColor: "#111827",
             }}
             darkTheme={{
               background: "#111827",
@@ -153,6 +156,7 @@ function App() {
               needleColor: "#f9fafb",
               needleCenter: "#4b5563",
               textOutline: "#000000",
+              valueTextColor: "#f9fafb",
             }}
           />
           <div className="controls">

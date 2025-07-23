@@ -55,6 +55,7 @@ function App() {
 | `lightTheme`    | `ThemeColors`                         | See below                                                            | Custom colors for light mode                |
 | `darkTheme`     | `ThemeColors`                         | See below                                                            | Custom colors for dark mode                 |
 | `autoDetectTheme` | `boolean`                           | `true`                                                               | Automatically detect and apply dark mode    |
+| `showTextOutline` | `boolean`                           | `true`                                                               | Show text outline effect on value text      |
 
 ## Examples
 
@@ -146,11 +147,12 @@ The component automatically detects dark mode based on:
 
 ```typescript
 interface ThemeColors {
-  background?: string;    // Inner arc background
-  tickColor?: string;     // Tick marks color
-  needleColor?: string;   // Needle body color
-  needleCenter?: string;  // Needle center dot color
-  textOutline?: string;   // Text outline effect color
+  background?: string;      // Inner arc background
+  tickColor?: string;       // Tick marks color
+  needleColor?: string;     // Needle body color
+  needleCenter?: string;    // Needle center dot color
+  textOutline?: string;     // Text outline effect color
+  valueTextColor?: string;  // Value text color (auto-contrasts with background if not set)
 }
 ```
 
@@ -184,7 +186,64 @@ pnpm build:lib
 
 # Type checking
 pnpm type-check
+
+# Run linting
+pnpm lint
+
+# Run unit tests
+pnpm test
+
+# Run E2E tests
+pnpm test:e2e
 ```
+
+## Testing
+
+This project includes comprehensive test coverage:
+
+### Unit Tests
+
+Unit tests are written with Vitest and React Testing Library:
+
+```bash
+# Run tests once
+pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Run tests with UI
+pnpm test:ui
+
+# Run tests with coverage
+pnpm test:coverage
+```
+
+### E2E Tests
+
+End-to-end tests are written with Playwright to verify dark mode functionality across browsers:
+
+```bash
+# Run E2E tests
+pnpm test:e2e
+
+# Run E2E tests with UI mode
+pnpm test:e2e:ui
+
+# Debug E2E tests
+pnpm test:e2e:debug
+
+# Show test report
+pnpm test:e2e:report
+```
+
+The E2E tests verify:
+
+- Dark mode detection and theme switching
+- Color values in different themes
+- Text visibility and contrast
+- Manual theme override behavior
+- Cross-browser compatibility (Chrome, Firefox, Safari)
 
 ## Browser Support
 

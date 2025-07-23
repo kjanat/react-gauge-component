@@ -1,5 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { act } from "react";
 
 import Gauge from "./Gauge";
 import { type DisplayType, type GaugeProps, type ThemeColors, Gauge as NamedGauge } from "./index";
@@ -227,18 +228,27 @@ describe("Gauge Component", () => {
     expect(needlePath).toBeInTheDocument();
   });
 
-  it("detects dark mode class on document element", () => {
+  it("detects dark mode class on document element", async () => {
     // Add dark class to simulate dark mode
-    document.documentElement.classList.add("dark");
+    act(() => {
+      document.documentElement.classList.add("dark");
+    });
 
-    const { container } = render(<Gauge value={3} showTicks={true} />);
+    const { container, unmount } = render(<Gauge value={3} showTicks={true} />);
 
-    // Check dark theme colors
-    const innerArc = container.querySelector('path[fill="#1f2937"]');
-    expect(innerArc).toBeInTheDocument();
+    // Wait for the component to detect dark mode
+    await waitFor(() => {
+      const innerArc = container.querySelector('path[fill="#1f2937"]');
+      expect(innerArc).toBeInTheDocument();
+    });
 
-    // Clean up
-    document.documentElement.classList.remove("dark");
+    // Clean up - unmount first to stop observers
+    unmount();
+    
+    // Then remove dark class
+    act(() => {
+      document.documentElement.classList.remove("dark");
+    });
   });
 
   it("respects autoDetectTheme=false", () => {
@@ -255,7 +265,7 @@ describe("Gauge Component", () => {
     document.documentElement.classList.remove("dark");
   });
 
-  it("uses custom dark theme when in dark mode", () => {
+  it("uses custom dark theme when in dark mode", async () => {
     const customDarkTheme: ThemeColors = {
       background: "#000000",
       tickColor: "#cccccc",
@@ -264,21 +274,30 @@ describe("Gauge Component", () => {
     };
 
     // Add dark class
-    document.documentElement.classList.add("dark");
+    act(() => {
+      document.documentElement.classList.add("dark");
+    });
 
-    const { container } = render(
+    const { container, unmount } = render(
       <Gauge value={3} showTicks={true} darkTheme={customDarkTheme} />
     );
 
-    // Check custom dark theme colors
-    const innerArc = container.querySelector('path[fill="#000000"]');
-    expect(innerArc).toBeInTheDocument();
+    // Wait for the component to detect dark mode
+    await waitFor(() => {
+      const innerArc = container.querySelector('path[fill="#000000"]');
+      expect(innerArc).toBeInTheDocument();
+    });
 
     const tickLine = container.querySelector('line[stroke="#cccccc"]');
     expect(tickLine).toBeInTheDocument();
 
-    // Clean up
-    document.documentElement.classList.remove("dark");
+    // Clean up - unmount first to stop observers
+    unmount();
+    
+    // Then remove dark class
+    act(() => {
+      document.documentElement.classList.remove("dark");
+    });
   });
 });
 

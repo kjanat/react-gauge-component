@@ -13,6 +13,8 @@ export interface ThemeColors {
   needleCenter?: string;
   /** Color for text outline effect (default: white in light, black in dark) */
   textOutline?: string;
+  /** Color for value text over gauge background (default: contrasts with background) */
+  valueTextColor?: string;
 }
 
 export interface GaugeProps {
@@ -46,6 +48,8 @@ export interface GaugeProps {
   darkTheme?: ThemeColors;
   /** Automatically detect and apply dark mode (default: true) */
   autoDetectTheme?: boolean;
+  /** Show text outline effect on value text (default: true) */
+  showTextOutline?: boolean;
 }
 
 const Gauge: React.FC<GaugeProps> = ({
@@ -64,6 +68,7 @@ const Gauge: React.FC<GaugeProps> = ({
   lightTheme = {},
   darkTheme = {},
   autoDetectTheme = true,
+  showTextOutline = true,
 }) => {
   const uniqueId = React.useId();
   const filterId = `invert-${uniqueId}`;
@@ -75,6 +80,7 @@ const Gauge: React.FC<GaugeProps> = ({
     needleColor: "#1f2937",
     needleCenter: "white",
     textOutline: "white",
+    valueTextColor: "#1f2937", // Dark text on white background
   };
 
   const defaultDarkTheme: ThemeColors = {
@@ -83,6 +89,7 @@ const Gauge: React.FC<GaugeProps> = ({
     needleColor: "#e5e7eb",
     needleCenter: "#374151",
     textOutline: "black",
+    valueTextColor: "#f9fafb", // Light text on dark background
   };
 
   // Detect dark mode
@@ -92,20 +99,37 @@ const Gauge: React.FC<GaugeProps> = ({
     if (!autoDetectTheme) return;
 
     const checkDarkMode = () => {
-      // Check for Tailwind dark mode class on html/body
-      const hasDarkClass = document.documentElement.classList.contains("dark") || 
-                          document.body.classList.contains("dark");
-      // Check system preference
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      setIsDarkMode(hasDarkClass || prefersDark);
+      // Priority order:
+      // 1. If 'dark' class exists on html/body -> dark mode
+      // 2. If 'light' class exists on html/body -> light mode  
+      // 3. Otherwise use system preference
+      
+      const htmlElement = document.documentElement;
+      const bodyElement = document.body;
+      
+      if (htmlElement.classList.contains("dark") || bodyElement.classList.contains("dark")) {
+        setIsDarkMode(true);
+      } else if (htmlElement.classList.contains("light") || bodyElement.classList.contains("light")) {
+        setIsDarkMode(false);
+      } else {
+        // No explicit class, use system preference
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        setIsDarkMode(prefersDark);
+      }
     };
 
     checkDarkMode();
 
     // Listen for class changes
     const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    observer.observe(document.documentElement, { 
+      attributes: true, 
+      attributeFilter: ["class"] 
+    });
+    observer.observe(document.body, { 
+      attributes: true, 
+      attributeFilter: ["class"] 
+    });
 
     // Listen for system preference changes
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -121,6 +145,18 @@ const Gauge: React.FC<GaugeProps> = ({
   const currentLightTheme = { ...defaultLightTheme, ...lightTheme };
   const currentDarkTheme = { ...defaultDarkTheme, ...darkTheme };
   const activeTheme = isDarkMode ? currentDarkTheme : currentLightTheme;
+
+  // Helper function to get contrasting color
+  const getContrastingColor = (bgColor: string): string => {
+    // Simple approach: known light colors get dark text, dark colors get light text
+    const lightColors = ["white", "#ffffff", "#fff", "#f9fafb", "#f3f4f6", "#e5e7eb"];
+    const isLightBg = lightColors.includes(bgColor.toLowerCase());
+    return isLightBg ? "#1f2937" : "#f9fafb";
+  };
+
+  // Determine value text color
+  const valueTextColor = activeTheme.valueTextColor || 
+    getContrastingColor(activeTheme.background || defaultLightTheme.background!);
 
   const clampedValue = Math.max(min, Math.min(max, value));
   const percentage = ((clampedValue - min) / (max - min)) * 100;
@@ -208,7 +244,7 @@ const Gauge: React.FC<GaugeProps> = ({
   };
 
   return (
-    <div className={`flex flex-col items-center ${className}`}>
+    <div className={`flex flex-col items-center ${className}`} style={{ color: isDarkMode ? '#e5e7eb' : '#374151' }}>
       <svg
         width={width}
         height={height}
@@ -260,7 +296,8 @@ const Gauge: React.FC<GaugeProps> = ({
                 y={labelY}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                className="text-sm font-medium fill-gray-600"
+                className="text-sm font-medium"
+                fill="currentColor"
               >
                 {tick.value}
               </text>
@@ -281,8 +318,9 @@ const Gauge: React.FC<GaugeProps> = ({
           x={centerX}
           y={centerY - 40}
           textAnchor="middle"
-          className="text-2xl font-bold fill-gray-800"
-          filter={`url(#${filterId})`}
+          className="text-2xl font-bold"
+          fill={valueTextColor}
+          filter={showTextOutline ? `url(#${filterId})` : undefined}
         >
           {getDisplayValue()}
         </text>
@@ -292,7 +330,8 @@ const Gauge: React.FC<GaugeProps> = ({
             x={centerX}
             y={centerY + 30}
             textAnchor="middle"
-            className="text-lg font-medium fill-gray-600"
+            className="text-lg font-medium"
+            fill="currentColor"
           >
             {label}
           </text>
