@@ -19,7 +19,8 @@
       "!pnpm-lock.yaml",
       "!.git/**",
       "!.husky/**",
-      "!logs/**"
+      "!logs/**",
+      "!.claude/**"
     ]
   },
   "formatter": {

@@ -75,7 +75,9 @@ describe("Gauge Component", () => {
 
   it("handles invalid displayType by defaulting to percentage", () => {
     // Test the default case in the switch statement
-    render(<Gauge value={2.5} min={0} max={5} displayType={"invalid" as any} />);
+    render(
+      <Gauge value={2.5} min={0} max={5} displayType={"invalid" as GaugeProps["displayType"]} />
+    );
     expect(screen.getByText("50%")).toBeInTheDocument();
   });
 
