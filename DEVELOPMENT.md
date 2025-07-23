@@ -111,7 +111,7 @@ describe('Gauge', () => {
 ### GitHub Actions Workflows
 
 1. **CI Pipeline** (`.github/workflows/ci.yml`)
-   - Runs on push/PR to main branches
+   - Runs on push/PR to `master` and `develop` branches
    - Linting and type checking
    - Building library and examples
    - Running tests
