@@ -79,7 +79,7 @@ const Gauge: React.FC<GaugeProps> = ({
     tickColor: "#374151",
     needleColor: "#1f2937",
     needleCenter: "white",
-    textOutline: "white",
+    textOutline: "white", // Matches the default light background
     valueTextColor: "#1f2937", // Dark text on white background
   };
 
@@ -88,7 +88,7 @@ const Gauge: React.FC<GaugeProps> = ({
     tickColor: "#9ca3af",
     needleColor: "#e5e7eb",
     needleCenter: "#374151",
-    textOutline: "black",
+    textOutline: "#1f2937", // gray-800 - matches the dark mode card background
     valueTextColor: "#f9fafb", // Light text on dark background
   };
 
@@ -165,11 +165,12 @@ const Gauge: React.FC<GaugeProps> = ({
   // Handle empty colors array gracefully
   const safeColors = colors.length > 0 ? colors : ["#6b7280"];
 
-  const width = size;
+  const padding = 10; // Extra padding for edge labels
+  const width = size + padding * 2;
   const height = size / 2 + 60; // Increased to accommodate label
   const centerX = width / 2;
   const centerY = height - 40; // Adjusted to leave room for label
-  const radius = width / 2 - 30;
+  const radius = (width - padding * 2) / 2 - 30;
   const innerRadius = radius - thickness;
 
   const ticks: Array<{ value: number; angle: number }> = [];

@@ -15,7 +15,9 @@ A customizable, animated gauge/speedometer component for React applications. Per
 - 💪 TypeScript support
 - 🪶 Lightweight with no dependencies
 
-## Installation (NOT YET PUBLISHED TO NPM, DOESN'T WORK YET)
+## Installation
+
+[![npm version](https://img.shields.io/npm/v/@kjanat/react-gauge-component.svg)](https://www.npmjs.com/package/@kjanat/react-gauge-component)
 
 ```bash
 npm install @kjanat/react-gauge-component

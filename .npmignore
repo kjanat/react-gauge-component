@@ -6,7 +6,8 @@ docs/
 # Config files
 .gitignore
 tsconfig.json
-vite.config.ts
+tsconfig.build.json
+vite.config.examples.ts
 vite.config.lib.ts
 tailwind.config.js
 postcss.config.js
@@ -18,6 +19,16 @@ postcss.config.js
 node_modules/
 coverage/
 .env*
+dist-examples/
+playwright-report/
+test-results/
+e2e/
+vitest.config.ts
+plan.md
+archive-original-gauge-component.tsx
+CLAUDE.md
+*.spec.ts
+*.test.ts
 
 # Editor files
 .vscode/

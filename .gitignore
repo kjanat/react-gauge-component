@@ -1,6 +1,13 @@
 logs/
 .vscode/
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
 dist-examples/
+
 # Created by https://www.toptal.com/developers/gitignore/api/node,linux,windows,macos,visualstudiocode,jetbrains+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,linux,windows,macos,visualstudiocode,jetbrains+all
 
@@ -326,9 +333,3 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/node,linux,windows,macos,visualstudiocode,jetbrains+all
-
-# Playwright
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
