@@ -8,6 +8,7 @@ docs/
 tsconfig.json
 tsconfig.lib.json
 tsconfig.examples.json
+vite.config.ts
 vite.config.examples.ts
 vite.config.lib.ts
 tailwind.config.js
