@@ -1,17 +1,31 @@
 import React from "react";
 
+export type DisplayType = "percentage" | "value" | "custom";
+
 export interface GaugeProps {
+  /** Current value to display on the gauge (default: 2.5) */
   value?: number;
+  /** Minimum value of the gauge range (default: 0) */
   min?: number;
+  /** Maximum value of the gauge range (default: 5) */
   max?: number;
+  /** Label text to display below the gauge */
   label?: string;
-  displayType?: "percentage" | "value" | "custom";
+  /** How to display the value: percentage, raw value, or custom format (default: "percentage") */
+  displayType?: DisplayType;
+  /** Custom function to format the display value (required when displayType is "custom") */
   customDisplay?: (value: number) => string;
+  /** Interval between tick marks (default: 1) */
   tickInterval?: number;
+  /** Whether to show tick marks and labels (default: true) */
   showTicks?: boolean;
+  /** Array of colors for gauge segments (default: green to red gradient) */
   colors?: string[];
+  /** Width of the gauge in pixels (default: 300) */
   size?: number;
+  /** Thickness of the gauge arc in pixels (default: 40) */
   thickness?: number;
+  /** Additional CSS classes to apply to the wrapper */
   className?: string;
 }
 
@@ -35,6 +49,9 @@ const Gauge: React.FC<GaugeProps> = ({
   const clampedValue = Math.max(min, Math.min(max, value));
   const percentage = ((clampedValue - min) / (max - min)) * 100;
   const needleAngle = (percentage / 100) * 180;
+
+  // Handle empty colors array gracefully
+  const safeColors = colors.length > 0 ? colors : ["#6b7280"];
 
   const width = size;
   const height = size / 2 + 60; // Increased to accommodate label
@@ -68,14 +85,14 @@ const Gauge: React.FC<GaugeProps> = ({
     endAngle: number;
   }> = [];
   if (ticks.length > 1) {
-    const segmentCount = Math.min(colors.length, ticks.length - 1);
+    const segmentCount = Math.min(safeColors.length, ticks.length - 1);
     for (let i = 0; i < segmentCount; i++) {
       const startPercent = (i / segmentCount) * 100;
       const endPercent = ((i + 1) / segmentCount) * 100;
       const startAngle = (startPercent / 100) * 180;
       const endAngle = (endPercent / 100) * 180;
       colorSegments.push({
-        color: colors[i],
+        color: safeColors[i],
         startAngle,
         endAngle,
       });

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import Gauge from "./Gauge";
-import { type GaugeProps, Gauge as NamedGauge } from "./index";
+import { type DisplayType, type GaugeProps, Gauge as NamedGauge } from "./index";
 
 describe("Gauge Component", () => {
   it("renders without crashing", () => {
@@ -75,9 +75,7 @@ describe("Gauge Component", () => {
 
   it("handles invalid displayType by defaulting to percentage", () => {
     // Test the default case in the switch statement
-    render(
-      <Gauge value={2.5} min={0} max={5} displayType={"invalid" as GaugeProps["displayType"]} />
-    );
+    render(<Gauge value={2.5} min={0} max={5} displayType={"invalid" as DisplayType} />);
     expect(screen.getByText("50%")).toBeInTheDocument();
   });
 
@@ -172,6 +170,20 @@ describe("Gauge Component", () => {
       const pathData = path.getAttribute("d") || "";
       expect(pathData).toMatch(/A \d+ \d+ 0 0 1/); // Correct arc syntax
     });
+  });
+
+  it("handles empty colors array gracefully", () => {
+    const { container } = render(
+      <Gauge value={2.5} min={0} max={5} colors={[]} showTicks={true} />
+    );
+
+    // Should still render with default gray color
+    const paths = container.querySelectorAll("path");
+    const colorPaths = Array.from(paths).filter((path) => path.getAttribute("opacity") === "0.9");
+
+    expect(colorPaths.length).toBeGreaterThan(0);
+    // Should use the fallback gray color
+    expect(colorPaths[0].getAttribute("fill")).toBe("#6b7280");
   });
 });
 
