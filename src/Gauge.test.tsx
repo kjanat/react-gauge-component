@@ -299,6 +299,135 @@ describe("Gauge Component", () => {
       document.documentElement.classList.remove("dark");
     });
   });
+
+  it("detects explicit light class and stays in light mode", async () => {
+    // Add light class to force light mode
+    act(() => {
+      document.documentElement.classList.add("light");
+    });
+
+    const { container, unmount } = render(<Gauge value={3} showTicks={true} />);
+
+    // Should use light theme colors
+    await waitFor(() => {
+      const innerArc = container.querySelector('path[fill="white"]');
+      expect(innerArc).toBeInTheDocument();
+    });
+
+    // Clean up
+    unmount();
+    act(() => {
+      document.documentElement.classList.remove("light");
+    });
+  });
+
+  it("uses contrasting text color when valueTextColor is not provided", async () => {
+    // Test with light background - should get dark text
+    const lightTheme: ThemeColors = {
+      background: "#ffffff",
+      // Intentionally not providing valueTextColor
+    };
+
+    const { container } = render(
+      <Gauge value={3.5} displayType="value" lightTheme={lightTheme} />
+    );
+
+    // Should use dark text color for contrast
+    const valueText = container.querySelector('text[fill="#1f2937"]');
+    expect(valueText).toBeInTheDocument();
+    expect(valueText?.textContent).toBe("3.5");
+  });
+
+  it("uses getContrastingColor fallback when valueTextColor is explicitly undefined", async () => {
+    // We need to override the default theme's valueTextColor to trigger the fallback
+    const darkBgTheme: ThemeColors = {
+      background: "#000000", // Black background - not in light colors list
+      tickColor: "#cccccc",
+      needleColor: "#ffffff",
+      needleCenter: "#888888",
+      valueTextColor: undefined, // Explicitly undefined to override default
+    };
+
+    const { container } = render(
+      <Gauge value={4.2} displayType="value" lightTheme={darkBgTheme} autoDetectTheme={false} />
+    );
+
+    // Find the value text
+    const texts = container.querySelectorAll('text');
+    let valueText = null;
+    texts.forEach(text => {
+      const fill = text.getAttribute('fill');
+      if (fill && fill !== 'currentColor' && text.textContent === '4.2') {
+        valueText = text;
+      }
+    });
+
+    // Should use light text color (#f9fafb) for contrast with dark background
+    expect(valueText).toBeInTheDocument();
+    expect(valueText?.getAttribute('fill')).toBe('#f9fafb');
+  });
+
+  it("handles various light background colors for contrast", () => {
+    // Test multiple known light colors
+    const lightBackgrounds = ["#f9fafb", "#f3f4f6", "#e5e7eb"];
+    
+    lightBackgrounds.forEach(bgColor => {
+      const theme: ThemeColors = {
+        background: bgColor,
+      };
+
+      const { container } = render(
+        <Gauge value={2.5} displayType="value" lightTheme={theme} autoDetectTheme={false} />
+      );
+
+      // Should use dark text for all light backgrounds
+      const valueText = container.querySelector('text[fill="#1f2937"]');
+      expect(valueText).toBeInTheDocument();
+    });
+  });
+
+  it("respects showTextOutline prop", () => {
+    const { container } = render(
+      <Gauge value={3.5} displayType="value" showTextOutline={false} />
+    );
+
+    // Find the value text
+    const valueText = container.querySelector('text[fill="#1f2937"]');
+    expect(valueText).toBeInTheDocument();
+    
+    // Should not have filter attribute when showTextOutline is false
+    expect(valueText?.getAttribute('filter')).toBeNull();
+  });
+
+  it("uses fallback when background is undefined but valueTextColor is also undefined", () => {
+    // Both background and valueTextColor are undefined
+    const minimalTheme: ThemeColors = {
+      tickColor: "#666666",
+      needleColor: "#333333",
+      needleCenter: "#ffffff",
+      valueTextColor: undefined, // Explicitly undefined
+      background: undefined, // Explicitly undefined
+    };
+
+    const { container } = render(
+      <Gauge value={3.7} displayType="value" lightTheme={minimalTheme} autoDetectTheme={false} />
+    );
+
+    // Find the value text
+    const texts = container.querySelectorAll('text');
+    let valueText = null;
+    texts.forEach(text => {
+      const fill = text.getAttribute('fill');
+      if (fill && fill !== 'currentColor' && text.textContent === '3.7') {
+        valueText = text;
+      }
+    });
+
+    // Should fall back to using default light theme background (white) for contrast calculation
+    // Since white is in light colors list, should get dark text
+    expect(valueText).toBeInTheDocument();
+    expect(valueText?.getAttribute('fill')).toBe('#1f2937');
+  });
 });
 
 describe("Index Exports", () => {
