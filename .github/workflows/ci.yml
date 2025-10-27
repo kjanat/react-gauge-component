@@ -71,14 +71,14 @@ jobs:
         run: pnpm run build:examples
 
       - name: Upload library artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: dist-lib
           path: dist/
           retention-days: 7
 
       - name: Upload examples artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: dist-examples
           path: dist-examples/
